@@ -27,7 +27,7 @@ def setHighScore(user: str, data: dict) -> None:
 		# formating the dict to json
 		data = json.dumps(data)
 		r = requests.post(
-			"http://localhost:7777/?user={user}&highscore={data}".format(user=user, data=data)
+			"http://galfar.dyndns.org:25577/?user={user}&highscore={data}".format(user=user, data=data)
 			)
 		
 	except Exception as e:
@@ -41,7 +41,7 @@ def getHighScore(user: str) -> dict:
 	# getting all data here
 	try:
 		r = requests.get(
-			"http://localhost:7777/"
+			"http://galfar.dyndns.org/"
 			)
 
 		# formating it into dict from json
