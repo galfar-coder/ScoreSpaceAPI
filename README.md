@@ -41,7 +41,7 @@ def getHighScore(user: str) -> dict:
 	# getting all data here
 	try:
 		r = requests.get(
-			"http://galfar.dyndns.org/"
+			"http://galfar.dyndns.org:25577/"
 			)
 
 		# formating it into dict from json
