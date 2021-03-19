@@ -25,7 +25,7 @@ def createGame(game: str) -> None:
 	"""
 	try:
 		r = requests.post(
-			"http://localhost:7777/reggame/?game={game}".format(game=game)
+			"http://galfar.dyndns.org:25577/reggame/?game={game}".format(game=game)
 		)
 	except Exception as e:
 		# Something went wrong!
@@ -47,7 +47,7 @@ def createUser(game: str,user: str, args: dict) -> str:
 
 	try:
 		r = requests.post(
-			"http://localhost:7777/register/?game={game}&username={username}&args={args}".format(game=game,username=user,args=json.dumps(args))
+			"http://galfar.dyndns.org:25577/register/?game={game}&username={username}&args={args}".format(game=game,username=user,args=json.dumps(args))
 		)
 		return r.text
 	except Exception as e:
@@ -71,7 +71,7 @@ def setHighScore(game: str, user: str, secret: str, data: dict) -> None:
 		# formating the dict to json
 		data = json.dumps(data)
 		r = requests.post(
-			"http://localhost:7777/?game={game}&user={user}&secret={secret}&highscore={data}".format(game=game, user=user, secret=secret, data=data)
+			"http://galfar.dyndns.org:25577/?game={game}&user={user}&secret={secret}&highscore={data}".format(game=game, user=user, secret=secret, data=data)
 		)
 		
 	except Exception as e:
@@ -90,7 +90,7 @@ def getHighScore(game: str) -> dict:
 	# getting all data here
 	try:
 		r = requests.get(
-			"http://localhost:7777/"
+			"http://galfar.dyndns.org:25577/"
 			)
 
 		# formating it into dict from json
