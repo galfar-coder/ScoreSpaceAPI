@@ -14,65 +14,108 @@ Note that this is code for python 3.x.x !
 
 
 ```python
-import requests
-import json
+import json, requests
 
+def createGame(game: str) -> None:
+	"""
+	Will create a game if a game by that name has not already been created
+	game is the name of your game
+	syntax: `createGame(GameName)`
+	returns: `None`
+	"""
+	try:
+		r = requests.post(
+			"http://localhost:7777/reggame/?game={game}".format(game=game)
+		)
+	except Exception as e:
+		# Something went wrong!
+		print("Something went wrong! error: " + str(e))
 
+def createUser(game: str,user: str, args: dict) -> str:
+	"""
+	Will create a user if a user by that name has not already been created on that game
+	info:
+	game is the name of your game
+	user is the user that you're trying to set
+	args is the default values for ex. Highscore so {"Highscore": 999}
+	will return the secret for the created user if it succeded
+	will return "ERR" if it cannot connect to the api
+	if the user has already been created it will not return the secret key and instead it will return "already in the system! forgot secret? contact: galfar#1954"
+	syntax: `createUser(GameName, Username, Args)`
+	returns: `str`
+	"""
 
-def setHighScore(user: str, data: dict) -> None:
-	# makes a POST request to ScoreSpaceAPI with user and data(formated json)
-	# user is your username on discord
-	# data needs to be formated json, else it will throw an error to you
+	try:
+		r = requests.post(
+			"http://localhost:7777/register/?game={game}&username={username}&args={args}".format(game=game,username=user,args=json.dumps(args))
+		)
+		return r.text
+	except Exception as e:
+		# Something went wrong!
+		print("Something went wrong! error: " + str(e))
+		return "ERR"
+
+def setHighScore(game: str, user: str, secret: str, data: dict) -> None:
+	"""
+	Sets a highscore of a game and user and secret
+	info:
+	
+	game is the name of your game
+	user is the user that you're trying to set
+	secret is the secret that is generated when you create a user the secret key ONLY works with the user it was created with
+	data is the updated highscores you want to upload to the api
+	syntax: `setHighScore(GameName, Username, Secret, Data)`
+	returns: `None`
+	"""
 	try:
 		# formating the dict to json
 		data = json.dumps(data)
 		r = requests.post(
-			"http://galfar.dyndns.org:25577/?user={user}&highscore={data}".format(user=user, data=data)
-			)
+			"http://localhost:7777/?game={game}&user={user}&secret={secret}&highscore={data}".format(game=game, user=user, secret=secret, data=data)
+		)
 		
 	except Exception as e:
 		# Something went wrong!
 		print("Something went wrong! error: " + str(e))
 
-
-def getHighScore(user: str) -> dict:
+def getHighScore(game: str) -> dict:
+	"""
+	gets the highscore of a game
+	syntax: `getHighScore(game)`
+	returns: `dict`
+	"""
+	
 	# gets every data, we want to pick only users data
 	# user can be only a string
 	# getting all data here
 	try:
 		r = requests.get(
-			"http://galfar.dyndns.org:25577/"
+			"http://localhost:7777/"
 			)
 
 		# formating it into dict from json
 		data = json.loads(r.content)
 
 		# getting users data
-		userdata = data[user]
-
-		# getting the highscores and putting them into dictionary(user: score)
-		highScores = dict(userdata["HighScore"])
+		gamedata = data[game]
 
 		# returning the dictionary with high scores, yay!
-		return highScores
+		return gamedata
 
 	except Exception as e:
 		# Something went wrong!
 		print("Something went wrong! error: " + str(e))
 
+#Create's the Game
+createGame("GameName")
 
-# before you set the highscores you firstly need to get the data, otherwise all data will be deleted!
-data = getHighScore("TestUser") # replace "TestUser" with your username
+#Save the secret to a file and load it when the game starts so you can access that user
+secret = createUser("Username", "GameName",{"Highscore": 0})
 
-# modify the data to your liking
-data["NewUser"] = 10 # setting "NewUser" a highscore
+#will set the highscore to 10
+setHighScore("GameName", "Username", secret, {"Highscore": 10})
 
-# then write the data back to api!
-setHighScore("TestUser", data) # Replace "TestUser" with your own username
-
-
-# yay! you just set a users highscore online!
-# rest of your code can go BELOW this
-# good luck!
+#Will get all the users highscores for that game
+getHighScore("GameName")
 ```
 
