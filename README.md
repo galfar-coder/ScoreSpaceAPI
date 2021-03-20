@@ -110,7 +110,7 @@ def getHighScore(game: str) -> dict:
 createGame("GameName")
 
 #Save the secret to a file and load it when the game starts so you can access that user
-secret = createUser("Username", "GameName",{"Highscore": 0})
+secret = createUser("GameName", "User",{"Highscore": 0})
 
 #will set the highscore to 10
 setHighScore("GameName", "Username", secret, {"Highscore": 10})
